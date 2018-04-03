@@ -3,6 +3,7 @@ package com.example.jojo.mvp_kotlin;
 import android.content.Context;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 /**
  * 单元测试参考网址：https://www.cnblogs.com/soaringEveryday/p/5461970.html
@@ -23,6 +24,8 @@ public class TestActivity extends ActivityInstrumentationTestCase2<MainActivity>
     protected void setUp() throws Exception {
         super.setUp();
         ctx = getActivity().getApplicationContext();
+        Log.e("TAG", "TestActivity");
+        testStart();
     }
 
     public void testStart() {

@@ -3,7 +3,8 @@ package com.example.jojo.mvp_kotlin.mvp.base;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.jojo.mvp_kotlin.mvp.TUtil;
+import com.example.jojo.mvp_kotlin.ioc.ViewBind;
+import com.example.jojo.mvp_kotlin.mvp.uitls.TUtil;
 
 
 /**
@@ -19,6 +20,8 @@ public abstract class ACT_Base<P extends BasePresenter, M extends BaseModel> ext
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getContentViewId());
+        ViewBind.inJect(this);
         mPresenter = TUtil.getT(this, 0);
         mModel = TUtil.getT(this, 1);
         if (this instanceof BaseView) {
@@ -26,6 +29,8 @@ public abstract class ACT_Base<P extends BasePresenter, M extends BaseModel> ext
         }
         initView();
     }
+
+    protected abstract int getContentViewId();
 
     protected abstract void initView();
 }

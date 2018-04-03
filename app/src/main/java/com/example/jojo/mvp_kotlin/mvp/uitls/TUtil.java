@@ -1,4 +1,4 @@
-package com.example.jojo.mvp_kotlin.mvp;
+package com.example.jojo.mvp_kotlin.mvp.uitls;
 
 import java.lang.reflect.ParameterizedType;
 
