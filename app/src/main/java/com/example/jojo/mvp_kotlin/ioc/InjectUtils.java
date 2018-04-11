@@ -12,7 +12,9 @@ import java.lang.reflect.Method;
  * description:
  */
 
-public class ViewBind {
+public class InjectUtils {
+    private static final String METHOD_SET_CONTENTVIEW = "setContentView";
+
     public static void inJect(Activity activity) {
         findById(activity);
         onClick(activity);
@@ -135,6 +137,32 @@ public class ViewBind {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    /**
+     * 注入主布局文件
+     *
+     * @param activity
+     */
+    private static void injectContentView(Activity activity)
+    {
+        Class<? extends Activity> clazz = activity.getClass();
+        // 查询类上是否存在ContentView注解
+        ContentView contentView = clazz.getAnnotation(ContentView.class);
+        if (contentView != null)// 存在
+        {
+            int contentViewLayoutId = contentView.value();
+            try
+            {
+                Method method = clazz.getMethod(METHOD_SET_CONTENTVIEW,
+                        int.class);
+                method.setAccessible(true);
+                method.invoke(activity, contentViewLayoutId);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
             }
         }
     }

@@ -6,6 +6,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jojo.mvp_kotlin.R;
+import com.example.jojo.mvp_kotlin.ioc.ContentView;
 import com.example.jojo.mvp_kotlin.ioc.OnClickView;
 import com.example.jojo.mvp_kotlin.ioc.ViewById;
 import com.example.jojo.mvp_kotlin.mvp.base.ACT_Base;
@@ -19,7 +20,7 @@ import com.example.jojo.mvp_kotlin.mvp.presenter.LoginPresenter;
  * wechat:18510829974
  * description:
  */
-
+@ContentView(R.layout.act_splash)
 public class TestActivity extends ACT_Base<LoginPresenter, LoginModel> implements LoginContract.View {
     @ViewById(R.id.textView)
     TextView textView;
@@ -34,10 +35,10 @@ public class TestActivity extends ACT_Base<LoginPresenter, LoginModel> implement
         Log.e("TAG", "showMsg---" + msg);
     }
 
-    @Override
-    protected int getContentViewId() {
-        return R.layout.act_splash;
-    }
+//    @Override
+//    protected int getContentViewId() {
+//        return R.layout.act_splash;
+//    }
 
     @OnClickView({R.id.button, R.id.textView})
     public void onClick(View view) {

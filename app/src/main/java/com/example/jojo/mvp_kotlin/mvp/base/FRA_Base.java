@@ -1,7 +1,7 @@
 package com.example.jojo.mvp_kotlin.mvp.base;
 
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by JoJo on 2018/3/30.
@@ -9,6 +9,6 @@ import android.support.v7.app.AppCompatActivity;
  * description:
  */
 
-public abstract class FRA_Base<P extends BasePresenter,M extends BaseModel> extends AppCompatActivity {
+public abstract class FRA_Base<P extends BasePresenter,M extends BaseModel> extends Fragment {
 
 }
