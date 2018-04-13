@@ -19,6 +19,23 @@ class ModelUtils {
                 .build()
                 .execute(object : StringCallback() {
                     override fun onResponse(response: String?, id: Int) {
+                        listener.onSuccessListener(response!!)
+                    }
+
+                    override fun onError(call: Call?, e: Exception?, id: Int) {
+                        listener.onFailedListener(e!!)
+                    }
+                })
+    }
+
+    fun login(phone: String, pw: String) {
+        var url = "https://www.sojson.com/open/api/weather/json.shtml?city=" + "北京"
+        OkHttpUtils
+                .get()
+                .url(url)
+                .build()
+                .execute(object : StringCallback() {
+                    override fun onResponse(response: String?, id: Int) {
                         listener!!.onSuccessListener(response!!)
                     }
 

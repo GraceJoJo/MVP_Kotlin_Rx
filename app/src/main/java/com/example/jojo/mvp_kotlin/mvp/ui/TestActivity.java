@@ -51,6 +51,7 @@ public class TestActivity extends ACT_Base<LoginPresenter, LoginModel> implement
     @Override
     protected void initView() {
         textView.setText("this is annotation textView");
+        textView.setOnClickListener( v -> Toast.makeText(getApplicationContext(), "Lambda", Toast.LENGTH_LONG).show());
         mPresenter.login("", "", "jojo");
     }
 }
