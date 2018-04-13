@@ -13,13 +13,13 @@ import java.lang.reflect.Method;
  */
 
 public class InjectUtils {
-    private static final String METHOD_SET_CONTENTVIEW = "setContentView";
 
     public static void inJect(Activity activity) {
+        injectContentView(activity);
         findById(activity);
         onClick(activity);
     }
-
+    //遍历类里面所有声明的方法，找到加了注解的方法
 //    private static void onclick(final Activity activity) {
 //        Class<? extends Activity> clazz = activity.getClass();
 //        Method[] declaredMethods = clazz.getDeclaredMethods();
@@ -62,7 +62,7 @@ public class InjectUtils {
 //    }
 
     /**
-     * 处理OnClick注解
+     * 处理OnClick注解：直接找到该类名称为onClick的方法，作为专属处理点击事件的方法
      */
     private static void onClick(final Activity activity) {
         // findViewById  setOnClick
@@ -87,6 +87,9 @@ public class InjectUtils {
                 for (int viewId : viewIds) {
                     // 先findViewById
                     final View view = activity.findViewById(viewId);
+                    if (view == null) {
+                        continue;
+                    }
                     // 后设置setOnclick
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -146,22 +149,19 @@ public class InjectUtils {
      *
      * @param activity
      */
-    private static void injectContentView(Activity activity)
-    {
+    private static void injectContentView(Activity activity) {
         Class<? extends Activity> clazz = activity.getClass();
         // 查询类上是否存在ContentView注解
         ContentView contentView = clazz.getAnnotation(ContentView.class);
         if (contentView != null)// 存在
         {
             int contentViewLayoutId = contentView.value();
-            try
-            {
-                Method method = clazz.getMethod(METHOD_SET_CONTENTVIEW,
+            try {
+                Method method = clazz.getMethod("setContentView",
                         int.class);
                 method.setAccessible(true);
                 method.invoke(activity, contentViewLayoutId);
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

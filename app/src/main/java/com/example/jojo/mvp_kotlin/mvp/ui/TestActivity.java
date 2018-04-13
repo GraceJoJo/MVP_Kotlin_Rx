@@ -35,11 +35,6 @@ public class TestActivity extends ACT_Base<LoginPresenter, LoginModel> implement
         Log.e("TAG", "showMsg---" + msg);
     }
 
-//    @Override
-//    protected int getContentViewId() {
-//        return R.layout.act_splash;
-//    }
-
     @OnClickView({R.id.button, R.id.textView})
     public void onClick(View view) {
         switch (view.getId()) {
