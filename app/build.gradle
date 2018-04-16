@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 //添加了才能使用tv_content.text = "",无需findViewbyId
 apply plugin: 'kotlin-android-extensions' //扩展插件
+apply plugin: 'kotlin-kapt' //扩展插件
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -22,6 +23,13 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+// 打开Data Binding , 这样我们可以通过声明式布局以精简的代码来绑定应用程序逻辑和布局
+    dataBinding{
+        enabled = true
+    }
+    kapt {
+        generateStubs = true
+    }
 }
 
 dependencies {
@@ -33,6 +41,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.zhy:okhttputils:2.6.2'
+//    解决Kotlin和DataBinding冲突 Unresolved reference: databinding 参考：https://blog.csdn.net/victor_fang/article/details/54668326
+    kapt "com.android.databinding:compiler:2.3.0"
 }
 repositories {
     mavenCentral()

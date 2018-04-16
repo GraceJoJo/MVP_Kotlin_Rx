@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mvp.ui.TestActivity">
+        <activity android:name=".mvvm.TestDataBinding">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,6 +19,10 @@
         </activity>
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".ACT_Splsh"></activity>
+        <activity android:name=".mvp.ui.TestActivity"></activity>
+        <!--<activity android:name=".mvvm.TestDataBinding"></activity>-->
+        <!--<activity android:name=".mvvm.model.TestDBActivity"></activity>-->
+        <activity android:name=".mvc.TestMvcActivity"></activity>
     </application>
 
 </manifest>
