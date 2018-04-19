@@ -10,7 +10,7 @@ import com.example.jojo.mvp_kotlin.mvvm.model.User;
 /**
  * Created by JoJo on 2018/4/16.
  * wechat:18510829974
- * description:
+ * description:Java代码编写测试DataBinding
  */
 
 public class TestDataBinding extends BaseActivity {

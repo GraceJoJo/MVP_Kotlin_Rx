@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 //添加了才能使用tv_content.text = "",无需findViewbyId
 apply plugin: 'kotlin-android-extensions' //扩展插件
+//解决：Kotlin和DataBinding冲突  Unresolved reference: databinding 参考：https://blog.csdn.net/ethanco/article/details/54693140
 apply plugin: 'kotlin-kapt' //扩展插件
 android {
     compileSdkVersion 26
@@ -19,6 +20,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+//    java中支持lambda语法
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
@@ -27,6 +29,7 @@ android {
     dataBinding{
         enabled = true
     }
+//  解决：Kotlin和DataBinding冲突  Unresolved reference: databinding 参考：https://blog.csdn.net/ethanco/article/details/54693140
     kapt {
         generateStubs = true
     }
