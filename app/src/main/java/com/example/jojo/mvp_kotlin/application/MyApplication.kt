@@ -1,4 +1,4 @@
-package com.example.jojo.mvp_kotlin
+package com.example.jojo.mvp_kotlin.application
 
 import android.app.Application
 import com.zhy.http.okhttp.OkHttpUtils
