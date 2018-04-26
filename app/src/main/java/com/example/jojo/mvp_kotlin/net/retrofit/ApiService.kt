@@ -1,5 +1,6 @@
 package com.zongxueguan.naochanle_android.retrofitrx
 
+import com.example.jojo.mvp_kotlin.bean.RequestEntity
 import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -57,7 +58,7 @@ interface ApiService {
      * Params:{"source_id":"11","type":"1","user_id":"1694"}
      */
     @POST("collections")
-    fun doCollectObject(@Body requestEntity: String): Observable<String>
+    fun doCollectObject(@Body requestEntity: RequestEntity): Observable<String>
 
     /**
      * post请求情形思：传递list类型参数(暂时没有用到)
@@ -130,6 +131,12 @@ interface ApiService {
      */
     @GET("userorders/{user_id}")
     fun getBuyRecoreds(@Path("user_id") user_id: String): Observable<Any>
+
+    //获取北京的天气信息
+//    "https://www.sojson.com/open/api/weather/json.shtml?city=" + "北京"
+//    如果Oberserver<String> 则会报错：onErrorExpected a string but was BEGIN_OBJECT at line 1 column 2 path $
+    @GET("weather/json.shtml")
+    fun getWeather(@Query("city") city: String): Observable<Object>
 
 
     /**

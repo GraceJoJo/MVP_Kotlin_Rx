@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
+import com.example.jojo.mvp_kotlin.R.id.textView
 import com.example.jojo.mvp_kotlin.utils.ModelUtils
 import kotlinx.android.synthetic.main.act_splash.*
 import java.lang.Exception
@@ -12,6 +13,8 @@ import java.lang.Exception
  * Created by JoJo on 2018/3/28.
  * wechat:18510829974
  * description:https://www.sojson.com/open/api/weather/json.shtml?city=北京
+ * Collection-Android-master
+ * KotlinMvp-master
  */
 class ACT_Splsh : AppCompatActivity(), ModelUtils.OnResultListener {
     override fun onCreate(savedInstanceState: Bundle?) {

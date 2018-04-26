@@ -1,11 +1,12 @@
 package com.example.jojo.mvp_kotlin.mvp.ui
 
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-
 import com.example.jojo.mvp_kotlin.R
+import com.example.jojo.mvp_kotlin.TestLambda
 import com.example.jojo.mvp_kotlin.ioc.ContentView
 import com.example.jojo.mvp_kotlin.ioc.OnClickView
 import com.example.jojo.mvp_kotlin.ioc.ViewById
@@ -37,7 +38,11 @@ class TestActivity : ACT_Base<LoginPresenter, LoginModel>(), LoginContract.View 
     fun onClick(view: View) {
         when (view.id) {
             R.id.textView -> Toast.makeText(this@TestActivity, "点击了textView", Toast.LENGTH_SHORT).show()
-            R.id.button -> Toast.makeText(this@TestActivity, "点击了button", Toast.LENGTH_SHORT).show()
+            R.id.button -> {
+                var intent = Intent()
+                intent.setClass(this@TestActivity,TestLambda::class.java)
+                startActivity(intent)
+            }
         }
 
     }
