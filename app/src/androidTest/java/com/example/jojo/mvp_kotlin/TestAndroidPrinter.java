@@ -3,6 +3,8 @@ package com.example.jojo.mvp_kotlin;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
+import com.example.jojo.mvp_kotlin.designmode.adapter.AdapterPattern;
+
 /**
  * Created by JoJo on 2018/3/29.
  * wechat:18510829974
@@ -16,5 +18,9 @@ public class TestAndroidPrinter extends InstrumentationTestCase {
 
     public void testPublishSubject() {
         Log.d(TAG, "Hello TestAndroidPrinter completed");
+        //测试建造者模式
+//        new BuilderClient();
+        //测试适配器模式
+        new AdapterPattern();
     }
 }
