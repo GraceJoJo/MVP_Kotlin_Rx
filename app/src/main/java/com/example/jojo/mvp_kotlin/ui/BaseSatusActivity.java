@@ -1,4 +1,4 @@
-package com.example.jojo.mvp_kotlin;
+package com.example.jojo.mvp_kotlin.ui;
 
 import android.app.Activity;
 import android.os.Build;

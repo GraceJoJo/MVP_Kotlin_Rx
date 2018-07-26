@@ -1,10 +1,10 @@
-package com.example.jojo.mvp_kotlin
+package com.example.jojo.mvp_kotlin.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
-import com.example.jojo.mvp_kotlin.R.id.textView
+import com.example.jojo.mvp_kotlin.R
 import com.example.jojo.mvp_kotlin.utils.ModelUtils
 import kotlinx.android.synthetic.main.act_splash.*
 import java.lang.Exception

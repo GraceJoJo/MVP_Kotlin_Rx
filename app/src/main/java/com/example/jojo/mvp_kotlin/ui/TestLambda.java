@@ -1,9 +1,10 @@
-package com.example.jojo.mvp_kotlin;
+package com.example.jojo.mvp_kotlin.ui;
 
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.jojo.mvp_kotlin.R;
 import com.example.jojo.mvp_kotlin.base.BaseActivity;
 import com.example.jojo.mvp_kotlin.ioc.ContentView;
 import com.example.jojo.mvp_kotlin.ioc.ViewById;

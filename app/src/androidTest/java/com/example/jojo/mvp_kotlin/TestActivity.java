@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
+import com.example.jojo.mvp_kotlin.ui.ACT_Splsh;
+import com.example.jojo.mvp_kotlin.ui.MainActivity;
+
 /**
  * 单元测试参考网址：https://www.cnblogs.com/soaringEveryday/p/5461970.html
  * Created by JoJo on 2018/3/29.

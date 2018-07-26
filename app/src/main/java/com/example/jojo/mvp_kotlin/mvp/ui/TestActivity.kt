@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.example.jojo.mvp_kotlin.R
-import com.example.jojo.mvp_kotlin.TestLambda
+import com.example.jojo.mvp_kotlin.ui.TestLambda
 import com.example.jojo.mvp_kotlin.ioc.ContentView
 import com.example.jojo.mvp_kotlin.ioc.OnClickView
 import com.example.jojo.mvp_kotlin.ioc.ViewById
@@ -40,7 +40,7 @@ class TestActivity : ACT_Base<LoginPresenter, LoginModel>(), LoginContract.View 
             R.id.textView -> Toast.makeText(this@TestActivity, "点击了textView", Toast.LENGTH_SHORT).show()
             R.id.button -> {
                 var intent = Intent()
-                intent.setClass(this@TestActivity,TestLambda::class.java)
+                intent.setClass(this@TestActivity, TestLambda::class.java)
                 startActivity(intent)
             }
         }

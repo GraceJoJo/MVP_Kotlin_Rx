@@ -1,9 +1,10 @@
-package com.example.jojo.mvp_kotlin
+package com.example.jojo.mvp_kotlin.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.TextView
+import com.example.jojo.mvp_kotlin.R
 import com.example.jojo.mvp_kotlin.net.retrofit.RxSchedulers
 import com.zongxueguan.naochanle_android.retrofitrx.RetrofitRxManager
 import io.reactivex.observers.DisposableObserver

@@ -1,8 +1,10 @@
-package com.example.jojo.mvp_kotlin;
+package com.example.jojo.mvp_kotlin.ui;
 
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.jojo.mvp_kotlin.R;
 
 /**
  * Created by JoJo on 2018/6/1.
