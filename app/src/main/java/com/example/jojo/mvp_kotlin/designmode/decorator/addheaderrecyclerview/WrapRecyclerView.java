@@ -10,7 +10,8 @@ import android.view.View;
  * Created by JoJo on 2018/7/27.
  * wechat:18510829974
  * description:支持添加头部和尾部的RecyclerView
- * 使用装饰者模式，拓展recyclerViewAdapter的功能，使其。
+ * 使用装饰者模式，拓展recyclerViewAdapter的功能，使其支持添加头部和尾部的RecyclerView
+ * 存在问题：数据移除和更新时，尾部会被更新丢失
  */
 
 public class WrapRecyclerView extends RecyclerView {
