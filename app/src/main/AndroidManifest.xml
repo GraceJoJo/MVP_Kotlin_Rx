@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/BaseTheme">
-        <activity android:name=".designmode.decorator.addheaderrecyclerview.ACT_HeaderAndFooterRecyclerView">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,7 +19,7 @@
         </activity>
         <activity android:name=".ui.TestLambda"></activity>
         <activity android:name=".ui.ACT_Splsh"></activity>
-        <activity android:name=".ui.MainActivity"></activity>
+        <!--<activity android:name=".ui.MainActivity"></activity>-->
         <!--<activity android:name=".mvvm.TestDataBinding"></activity>-->
         <!--<activity android:name=".mvvm.model.TestDBActivity"></activity>-->
         <activity android:name=".mvc.TestMvcActivity"></activity>

@@ -5,13 +5,14 @@ apply plugin: 'kotlin-android-extensions' //扩展插件
 //解决：Kotlin和DataBinding冲突  Unresolved reference: databinding 参考：https://blog.csdn.net/ethanco/article/details/54693140
 apply plugin: 'kotlin-kapt' //扩展插件
 android {
-    compileSdkVersion 26
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+//    buildToolsVersion rootProject.ext.android.buildToolsVersion
     defaultConfig {
         applicationId "com.example.jojo.mvp_kotlin"
-        minSdkVersion 15
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -36,7 +37,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
@@ -44,26 +45,24 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.zhy:okhttputils:2.6.2'
-//    解决Kotlin和DataBinding冲突 Unresolved reference: databinding 参考：https://blog.csdn.net/victor_fang/article/details/54668326
+    //    解决Kotlin和DataBinding冲突 Unresolved reference: databinding 参考：https://blog.csdn.net/victor_fang/article/details/54668326
     kapt "com.android.databinding:compiler:2.3.0"
-
     //    新版本的rxjava + retrofit
     //rxandroid
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     //rxjava
     implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
     //retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.4.0"
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     //gsonConverter
-    implementation "com.squareup.retrofit2:converter-gson:2.4.0"
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     //rxjavaAdapter
-    implementation "com.squareup.retrofit2:adapter-rxjava2:2.4.0"
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     //retrofit log打印
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     //recyclerview
     implementation 'com.android.support:recyclerview-v7:26.1.0'
-
-
+    implementation project(':multiple-status-view')
 }
 repositories {
     mavenCentral()
