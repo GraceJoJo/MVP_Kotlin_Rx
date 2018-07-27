@@ -1,6 +1,7 @@
 package com.example.jojo.mvp_kotlin.designmode.decorator.addheaderrecyclerview;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,11 +16,17 @@ import java.util.List;
 
 public class WrapRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private RecyclerView.Adapter mRealAdapter;
-    private List<View> mHeaderViews = new ArrayList<>();
-    private List<View> mFooterViews = new ArrayList<>();
+    public List<View> mHeaderViews = new ArrayList<>();
+    public List<View> mFooterViews = new ArrayList<>();
 
     public WrapRecyclerViewAdapter(RecyclerView.Adapter realAdapter) {
         this.mRealAdapter = realAdapter;
+        mRealAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -79,6 +86,13 @@ public class WrapRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        holder.itemView.setOnClickListener(v -> {
+            if (mListener != null) {
+                mListener.onItemClick(holder, position);
+            }
+        });
+
+
         // 头部和底部是都不需要做处理的，只要 mRealAdapter 要去做处理
         int numHeaders = getHeadersCount();
         if (position < numHeaders) {
@@ -91,8 +105,9 @@ public class WrapRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (mRealAdapter != null) {
             //中间的view
             adapterCount = mRealAdapter.getItemCount();
+            Log.e("TAG", "adjPosition=" + adjPosition + "-----adapterCount=" + adapterCount);
             if (adjPosition < adapterCount) {
-                mRealAdapter.onBindViewHolder(holder, position);
+                mRealAdapter.onBindViewHolder(holder, adjPosition);
             }
         }
     }
@@ -116,6 +131,7 @@ public class WrapRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void addHeaderView(View view) {
         if (!mHeaderViews.contains(view)) {
             mHeaderViews.add(view);
+            notifyDataSetChanged();
         }
 
     }
@@ -123,6 +139,7 @@ public class WrapRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void removeHeaderView(View view) {
         if (mHeaderViews.contains(view)) {
             mHeaderViews.remove(view);
+            notifyDataSetChanged();
         }
     }
 
@@ -132,14 +149,26 @@ public class WrapRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
      * @param view
      */
     public void addFooterView(View view) {
-        if (!mHeaderViews.contains(view)) {
-            mHeaderViews.add(view);
+        if (!mFooterViews.contains(view)) {
+            mFooterViews.add(view);
+            notifyDataSetChanged();
         }
     }
 
     public void removeFooterView(View view) {
         if (mHeaderViews.contains(view)) {
             mHeaderViews.remove(view);
+            notifyDataSetChanged();
         }
+    }
+
+    private OnItemClickListener mListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(RecyclerView.ViewHolder holder, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener mListener) {
+        this.mListener = mListener;
     }
 }
