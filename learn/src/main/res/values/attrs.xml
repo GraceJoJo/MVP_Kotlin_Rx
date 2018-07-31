@@ -26,4 +26,11 @@
         <attr name="top_Margin" format="dimension" />
         <attr name="bottom_Margin" format="dimension" />
     </declare-styleable>
+    <!--运动步数view-->
+    <declare-styleable name="SportStepView">
+        <!--圆环半径-->
+        <attr name="radius" format="dimension"></attr>
+        <attr name="outerRoundColor" format="color"></attr>
+        <attr name="innerRoundColor" format="color"></attr>
+    </declare-styleable>
 </resources>

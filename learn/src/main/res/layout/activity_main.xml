@@ -2,33 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mytext="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorAccent">
+    android:layout_height="match_parent">
 
 
-    <Button
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:onClick="textLayoutLeft"-->
+    <!--android:text="文字居左对齐" />-->
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:onClick="textLayoutCenter"-->
+    <!--android:text="文字居中对齐" />-->
+
+
+    <!--<com.example.jojo.learn.customview.MyTextView-->
+    <!--android:id="@+id/mytextview"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:background="@android:color/holo_red_dark"-->
+    <!--mytext:showMode="center"-->
+    <!--mytext:text="来一碗大的毒鸡汤：无论做什么事情，你首先要想到的不是你能得到什么，而是你能接受失去什么，当你无畏失去什么的时候，你就变得无敌了。人生最重要的不是所站的位置是所站的位置是所站的位置是所站的位置是所站的位置你来自何处并不重要，重要的是你要去往何方，人生最重要的不是所站的位置，而是所去的方向。人只要不失去方向，就永远不会失去自己！无论做什么事情，你首先要想到的不是你能得到什么，而是你能接受失去什么，当你无畏失去什么的时候，你就变得无敌了"-->
+    <!--mytext:textColor="@android:color/white"-->
+    <!--mytext:textSize="50px" />-->
+    <com.example.jojo.learn.customview.SportStepView
+        android:id="@+id/sportstepview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:onClick="textLayoutLeft"
-        android:text="文字居左对齐" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:background="@android:color/white"
-        android:onClick="textLayoutCenter"
-        android:text="文字居中对齐" />
-
-
-    <com.example.jojo.learn.customview.MyTextView
-        android:id="@+id/mytextview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@android:color/holo_red_dark"
-        mytext:showMode="center"
-        mytext:text="来一碗大的毒鸡汤：无论做什么事情，你首先要想到的不是你能得到什么，而是你能接受失去什么，当你无畏失去什么的时候，你就变得无敌了。人生最重要的不是所站的位置是所站的位置是所站的位置是所站的位置是所站的位置你来自何处并不重要，重要的是你要去往何方，人生最重要的不是所站的位置，而是所去的方向。人只要不失去方向，就永远不会失去自己！无论做什么事情，你首先要想到的不是你能得到什么，而是你能接受失去什么，当你无畏失去什么的时候，你就变得无敌了"
-        mytext:textColor="@android:color/white"
-        mytext:textSize="50px" />
+        android:layout_height="wrap_content"/>
 </RelativeLayout>
