@@ -8,6 +8,22 @@
             <enum name="left" value="0" />
             <enum name="center" value="1" />
         </attr>
+    </declare-styleable>
 
+    <declare-styleable name="ComposeTextView">
+        <attr name="ComposetextColor" format="color|reference" />
+        <attr name="ComposetextSize" format="dimension" />
+        <attr name="lineSpace" format="dimension" />
+        <attr name="maxLine" format="integer" />
+        <attr name="typeFace">
+            <enum name="normal" value="0" />
+            <enum name="sans" value="1" />
+            <enum name="serif" value="2" />
+            <enum name="monospace" value="3" />
+        </attr>
+        <attr name="left_Margin" format="dimension" />
+        <attr name="right_Margin" format="dimension" />
+        <attr name="top_Margin" format="dimension" />
+        <attr name="bottom_Margin" format="dimension" />
     </declare-styleable>
 </resources>

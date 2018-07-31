@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.example.jojo.learn.R;
@@ -25,9 +26,9 @@ import java.util.ArrayList;
 
 public class MyTextView extends View {
     //文字内容
-    private String mText = "this is text";
+    private String mText;
     //文字大小
-    private int mTextSize;
+    private int mTextSize = 10;
     //文字颜色
     private int mTextColor;
     //绘制的范围
@@ -44,6 +45,8 @@ public class MyTextView extends View {
     private int baseLineX;
     private Rect mMaxRect;
     private Rect mTextBoundOther;
+    private String text = "This is a great day";
+    private int drawTextHeight;
 
     public MyTextView(Context context) {
         this(context, null);
@@ -58,7 +61,7 @@ public class MyTextView extends View {
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MyTextViewApprence, defStyleAttr, 0);
         mText = typedArray.getString(R.styleable.MyTextViewApprence_text);
         mTextColor = typedArray.getColor(R.styleable.MyTextViewApprence_textColor, Color.BLACK);
-        mTextSize = (int) typedArray.getDimension(R.styleable.MyTextViewApprence_textSize, 15);
+        mTextSize = (int) typedArray.getDimension(R.styleable.MyTextViewApprence_textSize, mTextSize);
         showMode = typedArray.getInt(R.styleable.MyTextViewApprence_showMode, 0);
         typedArray.recycle();
 
@@ -66,15 +69,16 @@ public class MyTextView extends View {
         DisplayMetrics dm = getResources().getDisplayMetrics();
         mScreenHeight = dm.heightPixels;
         mScreenWidth = dm.widthPixels;
-
+        if (TextUtils.isEmpty(mText)) {
+            mText = "Hello.....Hello.....Hello.....Hello.....Hello.....Hello.....Hello.....Hello.....Hello.....Hello.....Hello....";
+        }
         init();
     }
 
     private void init() {
         //基线
-//        baseLineY = getHeight() / 2 + mTextBound.height() / 2;
-        baseLineY = mTextSize + 200;
-        baseLineX = 0 + 200;
+        baseLineY = mTextSize;
+        baseLineX = 0;
 
         //初始化画笔
         mPaint = new Paint();
@@ -85,11 +89,8 @@ public class MyTextView extends View {
 
         //获取绘制的宽高
         mTextBound = new Rect();
-        mPaint.getTextBounds(mText, 0, mText.length(), mTextBound);
+        mPaint.getTextBounds(text, 0, text.length(), mTextBound);
 
-        mTextBoundOther = new Rect();
-        mText = "Hello World !.....Hello World !.....Hello World !.....Hello World !.....Hello World !.....Hello World !.....Hello World !.....I Love U ~";
-        mPaint.getTextBounds(mText, 0, mText.length(), mTextBoundOther);
 
         mTextBound.top = baseLineY + mTextBound.top;
         mTextBound.bottom = baseLineY + mTextBound.bottom;
@@ -98,28 +99,33 @@ public class MyTextView extends View {
         //获取文字所占区域最小矩形
         Log.e("TAG", mTextBound.toShortString());
 
+        //换行的文字
+        mTextBoundOther = new Rect();
+        mPaint.getTextBounds(mText, 0, mText.length(), mTextBoundOther);
+
         //计算各线在位置
         Paint.FontMetrics fm = mPaint.getFontMetrics();
-
 
         ascent = baseLineY + fm.ascent;//当前绘制顶线
         descent = baseLineY + fm.descent;//当前绘制底线
         top = baseLineY + fm.top;//可绘制最顶线
         bottom = baseLineY + fm.bottom;//可绘制最低线
 
+        //每行文字的绘制高度
+        drawTextHeight = (int) (fm.descent - fm.ascent);
+
         //字符串所占的高度和宽度
         int width = (int) mPaint.measureText(mText);
         int height = (int) (bottom - top);
+        //文字绘制时可以占据的最大矩形区域
         mMaxRect = new Rect(baseLineX, (int) (baseLineY + fm.top), (baseLineX + width), (int) (baseLineY + fm.bottom));
+
 
     }
 
     private ArrayList<String> mTextList = new ArrayList<>();
     private float lineNum;//文字最终所占的行数
     private float spLineNum;
-    private boolean isOneLine;
-
-
     //换行展示的对齐方式
     private int showMode;
 
@@ -158,10 +164,8 @@ public class MyTextView extends View {
             if (specMaxWidth >= mTextWidth) {
                 lineNum = 1;
                 mTextList.add(mText);
-                isOneLine = true;
             } else {
                 //超过一行，需切割，分行显示
-                isOneLine = false;
                 spLineNum = mTextWidth * 1.0f / specMaxWidth;
 
                 //如果有小数的话就进1
@@ -223,9 +227,9 @@ public class MyTextView extends View {
             //首先丈量文本的宽度
 
 //            float textHeight = mTextBoundOther.height();
-            float textHeight = mTextBoundOther.height() * mTextList.size();
-            //控件的宽度就是文本的宽度加上两边的内边距。内边距就是padding的值，在构造方法执行完被赋值
-            height = (int) (getPaddingTop() + textHeight + getPaddingBottom());
+            float textHeight = drawTextHeight * mTextList.size();
+            //控件的宽度就是文本的宽度加上两边的内边距。内边距就是padding的值，在构造方法执行完被赋值。遗留问题：最后一行显示高度不够，在这里加上10px处理
+            height = (int) (getPaddingTop() + textHeight + getPaddingBottom() + 10);
         }
         //保存丈量结果
         setMeasuredDimension(width, height);
@@ -234,7 +238,9 @@ public class MyTextView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
+        /**
+         * 测试文字的绘制区域
+         */
 //        //绘制字符串所占的矩形区域
 //        mPaint.setColor(Color.GREEN);
 //        canvas.drawRect(mMaxRect, mPaint);
@@ -243,10 +249,9 @@ public class MyTextView extends View {
 //        mPaint.setColor(Color.RED);
 //        canvas.drawRect(mTextBound, mPaint);
 //
-////        canvas.drawText(mText, 0, mTextSize, mPaint);
 //        //绘制文字-绘制的起点是：绘制文字所在矩形的左下角顶点
 //        mPaint.setColor(Color.WHITE);
-//        canvas.drawText(mText, baseLineX, baseLineY, mPaint);
+//        canvas.drawText(text, baseLineX, baseLineY, mPaint);
 //
 //        //绘制基线
 //        mPaint.setColor(Color.RED);
@@ -254,29 +259,47 @@ public class MyTextView extends View {
 //
 //        mPaint.setColor(Color.YELLOW);
 //        canvas.drawLine(0, top, mScreenWidth, top, mPaint);
-//        mPaint.setColor(Color.BLUE);
+//        mPaint.setColor(Color.GREEN);
 //        canvas.drawLine(0, ascent, mScreenWidth, ascent, mPaint);
 //        mPaint.setColor(Color.BLACK);
 //        canvas.drawLine(0, descent, mScreenWidth, descent, mPaint);
 //        mPaint.setColor(Color.WHITE);
 //        canvas.drawLine(0, bottom, mScreenWidth, bottom, mPaint);
 
-        //绘制Hello World !
-//        canvas.drawText(mText, getWidth() / 2 - mTextBoundOther.width() / 2, getHeight() / 2 + mTextBoundOther.height() / 2, mPaint);
+//        绘制Hello World !
+//        canvas.drawText(text, getWidth() / 2 - mTextBoundOther.width() / 2, getHeight() / 2 + mTextBoundOther.height() / 2, mPaint);
 
         //分行绘制文字
         for (int i = 0; i < mTextList.size(); i++) {
             mPaint.getTextBounds(mTextList.get(i), 0, mTextList.get(i).length(), mTextBoundOther);
             //换行左对齐展示
             if (showMode == 0) {
-                canvas.drawText(mTextList.get(i), 0 + getPaddingLeft(), (getPaddingTop() + mTextBoundOther.height() * (i + 1)), mPaint);
+                canvas.drawText(mTextList.get(i), 0 + getPaddingLeft(), (getPaddingTop() + drawTextHeight * (i + 1)), mPaint);
             } else if (showMode == 1) {
                 //换行居中展示
-                canvas.drawText(mTextList.get(i), (getWidth() / 2 - mTextBoundOther.width() / 2) + getPaddingLeft(), (getPaddingTop() + mTextBoundOther.height() * (i + 1)), mPaint);
+                canvas.drawText(mTextList.get(i), (getWidth() / 2 - mTextBoundOther.width() / 2) + getPaddingLeft(), (getPaddingTop() + drawTextHeight * (i + 1)), mPaint);
             }
-
-            Log.v("TAG", "在X:" + (getWidth() / 2 - mTextBoundOther.width() / 2) + "  Y:" + (getPaddingTop() + (mTextBoundOther.height() * i)) + "  绘制：" + mTextList.get(i));
-            Log.i("TAG", "getWidth() :" + getWidth() + ", mBound.width():" + mTextBoundOther.width() + ",getHeight:" + getHeight() + ",mBound.height() *i:" + mTextBoundOther.height() * i);
         }
+    }
+
+    /**
+     * 控制文字对齐方式：居中或者居左
+     *
+     * @param showMode
+     */
+    public void reLayoutText(int showMode) {
+        this.showMode = showMode;
+        invalidate();
+    }
+
+    /**
+     * 将sp转换成px
+     *
+     * @param sp
+     * @return
+     */
+    private int sp2px(int sp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                getResources().getDisplayMetrics());
     }
 }
