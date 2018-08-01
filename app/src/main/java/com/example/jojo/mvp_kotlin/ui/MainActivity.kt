@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private fun requestData() {
         multipleStatusView.showLoading()
         Handler().postDelayed({
-            RetrofitRxManager.getRequestService().getWeather("北京")
+            RetrofitRxManager.getRequestService(this).getWeather("北京")
                     .compose(RxSchedulers.io_main())
                     .subscribeWith(object : DisposableObserver<Any>() {
                         override fun onNext(t: Any) {
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         override fun onError(e: Throwable) {
-    //                        onErrorExpected a string but was BEGIN_OBJECT at line 1 column 2 path $
+                            //                        onErrorExpected a string but was BEGIN_OBJECT at line 1 column 2 path $
                             Log.e("TAG", "onError" + e.message)
                             multipleStatusView.showError()
                         }

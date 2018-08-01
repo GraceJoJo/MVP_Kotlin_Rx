@@ -1,6 +1,8 @@
 package com.zongxueguan.naochanle_android.retrofitrx
 
+import android.content.Context
 import android.util.Log
+import com.example.jojo.mvp_kotlin.utils.NetUtils
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.Buffer
@@ -23,18 +25,23 @@ object RetrofitRxManager {
     //请求头信息
     private val HEADER_CONNECTION = "keep-alive"
     private val BASE_URL = "https://www.sojson.com/open/api/"
-    fun getRetrofit(): Retrofit? {
+    fun getRetrofit(context: Context): Retrofit? {
         if (retrofit == null) {
             synchronized(RetrofitRxManager::class.java) {
                 if (retrofit == null) {
+                    ///getExternalFilesDir:Android/data/包名/files/okhttp… (该路径通常挂载在/mnt/sdcard/下)
+                    val cache = Cache(File(context.getExternalFilesDir("ok"), ""), 14 * 1024 * 100)
                     var mClient = OkHttpClient.Builder()
-//                            .cache()//添加缓存
                             //添加公告查询参数
 //                            .addInterceptor(CommonQueryParamsInterceptor ())
                             //处理多个Baseurl的拦截器
 //                            .addInterceptor(MutiBaseUrlInterceptor())
+                            .cache(cache)
+                            .retryOnConnectionFailure(true)
                             .addInterceptor(getHeaderInterceptor())
                             .addInterceptor(LoggingInterceptor())//添加请求拦截(可以在此处打印请求信息和响应信息)
+                            .addInterceptor(CacheInterceptor())
+                            .addNetworkInterceptor(CacheInterceptor())//必须要有，否则会返回504
                             .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
                             .writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
                             .readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
@@ -51,11 +58,13 @@ object RetrofitRxManager {
         return retrofit
     }
 
+    var mContext: Context? = null
     /**
      * 获取Api接口
      */
-    fun getRequestService(): ApiService {
-        return getRetrofit()!!.create(ApiService::class.java)
+    fun getRequestService(context: Context): ApiService {
+        mContext = context
+        return getRetrofit(context)!!.create(ApiService::class.java)
     }
 
     /**
@@ -100,27 +109,36 @@ object RetrofitRxManager {
         }
     }
 
+    //短缓存有效期为10分钟
+    val CACHE_STALE_SHORT = 60 * 10
+    //长缓存有效期为7天
+    val CACHE_STALE_LONG = "60 * 60 * 24 * 7"
+    //查询缓存的Cache-Control设置，为if-only-cache时只查询缓存而不会请求服务器，max-stale可以配合设置缓存失效时间
+    val CACHE_CONTROL_CACHE = "only-if-cached, max-stale=" + CACHE_STALE_LONG
+    //查询网络的Cache-Control设置，头部Cache-Control设为max-age=0时则不会使用缓存而请求服务器
+    val CACHE_CONTROL_NETWORK = "max-age=0"
+
     /**
      * 设置缓存
      */
     class CacheInterceptor : Interceptor {
+        //云端响应头拦截器，用来适配缓存策略
         override fun intercept(chain: Interceptor.Chain?): Response {
-            val request = chain!!.request()
-            request.newBuilder().cacheControl(CacheControl.FORCE_CACHE)
-                    .build()
-            val response = chain!!.proceed(request)
-            val maxAge = 0
-            // 有网络时 设置缓存超时时间0个小时 ,意思就是不读取缓存数据,只对get有用,post没有缓冲
-            response.newBuilder()
-                    .header("Cache-Control", "public, max-age=" + maxAge)
-                    .removeHeader("Retrofit")// 清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效
-                    .build()
-            // 无网络时，设置超时为4周  只对get有用,post没有缓冲
-            val maxStale = 60 * 60 * 24 * 28
-            response.newBuilder()
-                    .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
-                    .removeHeader("nyn")
-                    .build()
+            var request = chain!!.request()
+            if (!NetUtils.isNetworkConnected(mContext)) {
+                request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build()
+            }
+            var response = chain.proceed(request)
+            if (NetUtils.isNetworkConnected(mContext)) {
+                var cacheControl: String = request.cacheControl().toString()
+                Log.e("Tag", "有网")
+                return response.newBuilder().header("Cache-Control", cacheControl)
+                        .removeHeader("Pragma").build()
+            } else {
+                Log.e("Tag", "无网")
+                return response.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + CACHE_STALE_LONG)
+                        .removeHeader("Pragma").build()
+            }
             return response
         }
 

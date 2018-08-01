@@ -28,7 +28,7 @@ public class TestLambda extends BaseActivity {
     @Override
     public void initView() {
         button.setOnClickListener(v -> {
-                    RetrofitRxManager.INSTANCE.getRequestService().getWeather("北京")
+                    RetrofitRxManager.INSTANCE.getRequestService(this).getWeather("北京")
                             .compose(RxSchedulers.io_main())
                             .subscribeWith(new DisposableObserver<Object>() {
                                 @Override
