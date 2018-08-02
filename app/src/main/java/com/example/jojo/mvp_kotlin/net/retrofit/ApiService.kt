@@ -1,6 +1,7 @@
 package com.zongxueguan.naochanle_android.retrofitrx
 
 import com.example.jojo.mvp_kotlin.bean.RequestEntity
+import com.example.jojo.mvp_kotlin.bean.WeatherEntity
 import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -136,7 +137,7 @@ interface ApiService {
 //    "https://www.sojson.com/open/api/weather/json.shtml?city=" + "北京"
 //    如果Oberserver<String> 则会报错：onErrorExpected a string but was BEGIN_OBJECT at line 1 column 2 path $
     @GET("weather/json.shtml")
-    fun getWeather(@Query("city") city: String): Observable<Any>
+    fun getWeather(@Query("city") city: String): Observable<WeatherEntity>
 
 
     /**

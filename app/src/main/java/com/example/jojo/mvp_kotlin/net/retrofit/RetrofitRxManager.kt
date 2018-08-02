@@ -2,6 +2,7 @@ package com.zongxueguan.naochanle_android.retrofitrx
 
 import android.content.Context
 import android.util.Log
+import com.example.jojo.mvp_kotlin.application.MyApplication
 import com.example.jojo.mvp_kotlin.utils.NetUtils
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,6 +26,7 @@ object RetrofitRxManager {
     //请求头信息
     private val HEADER_CONNECTION = "keep-alive"
     private val BASE_URL = "https://www.sojson.com/open/api/"
+
     fun getRetrofit(context: Context): Retrofit? {
         if (retrofit == null) {
             synchronized(RetrofitRxManager::class.java) {
@@ -58,12 +60,10 @@ object RetrofitRxManager {
         return retrofit
     }
 
-    var mContext: Context? = null
     /**
      * 获取Api接口
      */
     fun getRequestService(context: Context): ApiService {
-        mContext = context
         return getRetrofit(context)!!.create(ApiService::class.java)
     }
 
@@ -125,23 +125,24 @@ object RetrofitRxManager {
         //云端响应头拦截器，用来适配缓存策略
         override fun intercept(chain: Interceptor.Chain?): Response {
             var request = chain!!.request()
-            if (!NetUtils.isNetworkConnected(mContext)) {
+            //无网络时，去cache中请求
+            if (!NetUtils.isNetworkConnected(MyApplication.context)) {
                 request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build()
             }
             var response = chain.proceed(request)
-            if (NetUtils.isNetworkConnected(mContext)) {
+            if (NetUtils.isNetworkConnected(MyApplication.context)) {
                 var cacheControl: String = request.cacheControl().toString()
                 Log.e("Tag", "有网")
                 return response.newBuilder().header("Cache-Control", cacheControl)
-                        .removeHeader("Pragma").build()
+                        .removeHeader("Pragma").build() // 清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效
             } else {
                 Log.e("Tag", "无网")
+                    //无网络时，设置超时为CACHE_STALE_LONG  只对get有用, post没有缓冲
                 return response.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + CACHE_STALE_LONG)
                         .removeHeader("Pragma").build()
             }
             return response
         }
-
     }
 
     /**
@@ -187,7 +188,7 @@ object RetrofitRxManager {
             val t2 = System.nanoTime()//收到响应的时间
             val responseBody = response.peekBody((1024 * 1024).toLong())
             Log.e("request",
-                    String.format("Retrofit接收响应: %s %n返回json:【%s】 %n耗时：%.1fms %nCode:%s",
+                    String.format("Retrofit接收响应： %s %n返回json:%s %n耗时：%.1fms %nCode:%s",
                             response.request().url(),
                             responseBody.string(),
                             (t2 - t1) / 1e6, response.code()

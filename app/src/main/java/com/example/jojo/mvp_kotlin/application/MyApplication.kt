@@ -6,6 +6,7 @@ import com.zhy.http.okhttp.OkHttpUtils
 import com.zhy.http.okhttp.log.LoggerInterceptor
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
+import kotlin.properties.Delegates
 
 /**
  * Created by JoJo on 2018/3/28.
@@ -13,15 +14,16 @@ import java.util.concurrent.TimeUnit
  * description:
  */
 class MyApplication : Application() {
+    companion object {
 
-    fun getContext(): Context? {
-        return mContext
+        private val TAG = "MyApplication"
+
+        var context: Context by Delegates.notNull()
+
     }
-
-    var mContext: Context? = null
     override fun onCreate() {
         super.onCreate()
-        mContext = this
+        context = applicationContext
         var okhttpClient = OkHttpClient().newBuilder()
                 .addInterceptor(LoggerInterceptor("TAG"))
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
