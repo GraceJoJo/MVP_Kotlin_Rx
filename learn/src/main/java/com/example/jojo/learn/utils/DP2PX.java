@@ -1,6 +1,7 @@
 package com.example.jojo.learn.utils;
 
 import android.content.Context;
+import android.util.TypedValue;
 
 /**
  * Created by zj on 2017/1/4.
@@ -21,5 +22,15 @@ public class DP2PX {
 	public static int px2dip(Context context, float pxValue) {
 	  final float scale = context.getResources().getDisplayMetrics().density;
 	  return (int) (pxValue / scale + 0.5f);
+	}
+	/**
+	 * 将sp转换成px
+	 *
+	 * @param sp
+	 * @return
+	 */
+	private static int sp2px(Context context,int sp) {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+				context.getResources().getDisplayMetrics());
 	}
 }

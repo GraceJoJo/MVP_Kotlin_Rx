@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'kotlin-android'
+//添加了才能使用tv_content.text = "",无需findViewbyId
+apply plugin: 'kotlin-android-extensions' //扩展插件
 android {
     compileSdkVersion 26
 
@@ -35,5 +37,9 @@ dependencies {
     androidTestCompile('com.android.support:support-annotations:26.1.0') {
         force = true
     }
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 //    implementation 'com.android.support:recyclerview-v7:26.1.0'
+}
+repositories {
+    mavenCentral()
 }

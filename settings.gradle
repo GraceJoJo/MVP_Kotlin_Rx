@@ -1,1 +1,1 @@
-include ':app', ':learn', ':multiple-status-view'
+include ':app', ':learn', ':multiple-status-view', ':library'
