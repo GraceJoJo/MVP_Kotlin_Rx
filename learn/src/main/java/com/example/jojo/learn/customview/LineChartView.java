@@ -21,11 +21,18 @@ import java.util.List;
 /**
  * Created by JoJo on 2018/8/3.
  * wechat:18510829974
- * description:
+ * description: 曲线图/折线图
  */
 
 public class LineChartView extends View {
     private Context mContext;
+    //绘制坐标轴的画笔
+    private Paint mAxisPaint;
+    //绘制曲线的画笔
+    private Paint mPaint;
+    //绘制X轴上方的画笔
+    private Paint mXAxisLinePaint;
+    private Paint mPaintText;
     //向上的曲线图的绘制起点(px)
     private int startX;
     private int startY;
@@ -39,39 +46,32 @@ public class LineChartView extends View {
     //根据具体传入的数据，在坐标轴上绘制点
     private Point[] mPoints;
     //传入的数据，决定绘制的纵坐标值
-    private ArrayList<Integer> mDatas = new ArrayList<>();
-    //Y轴刻度间距(px)
-    private int yAxisSpace = 120;
-    //X轴刻度间距(px)
-    private int xAxisSpace = 200;
+    private List<Integer> mDatas = new ArrayList<>();
     //Y轴刻度集合
     private List<Integer> mYAxisList = new ArrayList<>();
     //X轴刻度集合
-    private ArrayList<String> mXAxisList = new ArrayList<>();
+    private List<String> mXAxisList = new ArrayList<>();
     //X轴的绘制距离
     private int mXAxisMaxValue;
     //Y轴的绘制距离
     private int mYAxisMaxValue;
+    //Y轴刻度间距(px)
+    private int yAxisSpace = 120;
+    //X轴刻度间距(px)
+    private int xAxisSpace = 200;
     //Y轴刻度线宽度
     private int mKeduWidth = 20;
-    //绘制坐标轴的画笔
-    private Paint mAxisPaint;
-    //绘制曲线的画笔
-    private Paint mPaint;
-    //绘制X轴上方的画笔
-    private Paint mXAxisLinePaint;
-    private Paint mPaintText;
     private float keduTextSize = 20;
+    //刻度值距离坐标的padding距离
+    private int textPadinng = 10;
+    //Y轴递增的实际值
+    private int yIncreaseValue;
     //true：绘制曲线 false：折线
     private boolean isCurve = true;
     private Rect mYMaxTextRect;
     private Rect mXMaxTextRect;
     private int mMaxTextHeight;
     private int mMaxTextWidth;
-    //刻度值距离坐标的padding距离
-    private int textPadinng = 10;
-    //Y轴递增的实际值
-    private int yIncreaseValue;
 
     public LineChartView(Context context) {
         this(context, null);
@@ -161,27 +161,6 @@ public class LineChartView extends View {
         int viewHeight = startY + 2 * mKeduWidth + DP2PX.dip2px(mContext, keduTextSize);
         //viewHeight=121
         Log.e("TAG", "viewHeight=" + viewHeight);
-    }
-
-    private void initData() {
-        //外界传入的数据，即为绘制曲线的每个点
-        mDatas.add(0);
-        mDatas.add(10);
-        mDatas.add(5);
-        mDatas.add(20);
-        mDatas.add(15);
-
-        int[] mYAxisData = new int[]{0, 10, 20, 30, 40};
-        for (int i = 0; i < mYAxisData.length; i++) {
-            mYAxisList.add(mYAxisData[i]);
-        }
-
-        //X轴数据
-        mXAxisList.add("01月");
-        mXAxisList.add("02月");
-        mXAxisList.add("03月");
-        mXAxisList.add("04月");
-        mXAxisList.add("05月");
     }
 
     /**
@@ -283,16 +262,37 @@ public class LineChartView extends View {
         }
     }
 
+    private void initData() {
+        //外界传入的数据，即为绘制曲线的每个点
+        mDatas.add(0);
+        mDatas.add(10);
+        mDatas.add(5);
+        mDatas.add(20);
+        mDatas.add(15);
+
+        int[] mYAxisData = new int[]{0, 10, 20, 30, 40};
+        for (int i = 0; i < mYAxisData.length; i++) {
+            mYAxisList.add(mYAxisData[i]);
+        }
+
+        //X轴数据
+        mXAxisList.add("01月");
+        mXAxisList.add("02月");
+        mXAxisList.add("03月");
+        mXAxisList.add("04月");
+        mXAxisList.add("05月");
+    }
+
     /**
      * 传入数据，重新绘制图表
      *
-     * @param mIncressUserList
-     * @param upYAxisData
+     * @param datas
+     * @param yAxisData
      */
-    public void setData(ArrayList<Integer> mIncressUserList, ArrayList<String> xAxisData, List<Integer> upYAxisData) {
-        this.mDatas = mIncressUserList;
+    public void updateData(List<Integer> datas, List<String> xAxisData, List<Integer> yAxisData) {
+        this.mDatas = datas;
         this.mXAxisList = xAxisData;
-        this.mYAxisList = upYAxisData;
+        this.mYAxisList = yAxisData;
         initView();
         postInvalidate();
     }
