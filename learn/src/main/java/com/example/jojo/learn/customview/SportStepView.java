@@ -211,7 +211,7 @@ public class SportStepView extends View {
     }
 
     //速度,值越大，变化速度越快
-    private float rate = 100;
+    private float rate = 128;
 
     /**
      * 开始动态计步
@@ -241,7 +241,7 @@ public class SportStepView extends View {
          * 方法二
          */
         ValueAnimator valueAnimator = ObjectAnimator.ofFloat(0, currentStep);
-        valueAnimator.setDuration(1000);
+        valueAnimator.setDuration(1600);
         valueAnimator.setInterpolator(new DecelerateInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

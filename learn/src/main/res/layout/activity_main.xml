@@ -54,11 +54,18 @@
     <com.example.jojo.learn.customview.PieChartView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/piechartview"/>
     <com.example.jojo.learn.customview.PieView
+        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:id="@+id/pieview"/>
+    <com.example.jojo.learn.customview.PieView
+        android:layout_below="@+id/pieview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/pieoview"/>
 </RelativeLayout>

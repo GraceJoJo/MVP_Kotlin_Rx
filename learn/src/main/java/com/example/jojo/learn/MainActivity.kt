@@ -51,7 +51,9 @@ class MainActivity : AppCompatActivity() {
         piechartview.setShow(colors, rateList, true, true)
         //ViewCompat.animate(barchartview).scaleX(0.5f).scaleY(0.5f).setDuration(0).start()
         var rate = listOf<Float>(25f/100, 25f/100, 25f/100, 25f/100)
-        pieview.updateDate(rate,colors)
+//        var rate = listOf<Float>(25f/100, 25f/100, 25f/100, 25f/100)
+        pieview.updateDate(rate,colors,true)
+        pieoview.updateDate(rate,colors,false)
     }
 
     //    public void textLayoutLeft(View v) {
