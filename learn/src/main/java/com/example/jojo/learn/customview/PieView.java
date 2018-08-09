@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by JoJo on 2018/8/6.
  * wechat:18510829974
- * description:
+ * description:饼状图
  */
 
 public class PieView extends View {
@@ -43,6 +43,7 @@ public class PieView extends View {
     //圆弧半径
     private float radius;
     private int startAngle = 45;
+    //不同色块之间是否需要空隙offset
     private int offset = 0;
     //圆弧中心点小圆点的圆心半径
     private int centerPointRadius;
@@ -126,6 +127,8 @@ public class PieView extends View {
         setMeasuredDimension(widthSize, heightSize);
     }
 
+    private int paintPosition;
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -133,6 +136,7 @@ public class PieView extends View {
         //(1)绘制圆饼
         RectF rectF = new RectF(0 + centerPointRadius + (xOffset + yOffset + textRect.width()), 0 + centerPointRadius + (xOffset + yOffset + textRect.height()), 2 * radius + centerPointRadius + (xOffset + yOffset + textRect.width()), 2 * radius + centerPointRadius + (xOffset + yOffset + textRect.height()));
         List<Point> mPointList = new ArrayList<>();
+
         for (int i = 0; i < mRateList.size(); i++) {
             mPaint.setStyle(Paint.Style.FILL);
             mPaint.setColor(mColorList.get(i));
