@@ -48,24 +48,70 @@
     <com.example.jojo.learn.customview.LineChartView
         android:id="@+id/linechartview"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"
-        android:layout_height="wrap_content" />
+        android:visibility="gone" />
+
     <com.example.jojo.learn.customview.PieChartView
+        android:id="@+id/piechartview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:id="@+id/piechartview"/>
+        android:visibility="gone" />
+
     <com.example.jojo.learn.customview.PieView
+        android:id="@+id/pieview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/pieview"/>
+        android:visibility="gone" />
+
     <com.example.jojo.learn.customview.PieView
-        android:layout_below="@+id/pieview"
+        android:id="@+id/pieoview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/pieview"
         android:layout_centerHorizontal="true"
-        android:id="@+id/pieoview"/>
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ball"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ball_shape"></ImageView>
+
+    <ImageView
+        android:id="@+id/customIv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <com.example.jojo.learn.customview.ScrollBallView
+        android:id="@+id/triangleview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!--护理进度-start-->
+    <RelativeLayout
+        android:layout_width="250px"
+        android:layout_height="250px"
+        android:layout_marginLeft="56px"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20px">
+
+        <ImageView
+            android:id="@+id/iv_bg"
+            android:layout_width="250px"
+            android:layout_height="250px"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/bg_nurse_progress_style_one" />
+
+        <com.example.jojo.learn.customview.PieMarkChatView
+            android:id="@+id/pieMarkChatView"
+            android:layout_width="90px"
+            android:layout_height="90px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="66px" />
+    </RelativeLayout>
 </RelativeLayout>

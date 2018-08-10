@@ -12,6 +12,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        pieMarkChatView.setCurrentProgress(78)
         //        mytextview = findViewById(R.id.mytextview);
         //当前实际的步数
         var mCurrentStep: Float = 9709f
