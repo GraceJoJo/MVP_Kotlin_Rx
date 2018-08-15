@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 /**
  * Created by JoJo on 2018/4/3.
  * wechat:18510829974
- * description:
+ * description:注解utils类
  */
 
 public class InjectUtils {
