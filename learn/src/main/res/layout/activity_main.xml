@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mytext="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/bg_home">
@@ -78,27 +77,23 @@
         android:id="@+id/ball"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="@drawable/ball_shape"></ImageView>
+        android:background="@drawable/ball_shape"
+        android:visibility="gone"></ImageView>
 
-    <ImageView
-        android:id="@+id/customIv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
 
     <com.example.jojo.learn.customview.ScrollBallView
         android:id="@+id/triangleview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
-    <!--护理进度-start-->
     <RelativeLayout
         android:layout_width="250px"
         android:layout_height="250px"
-        android:layout_marginLeft="56px"
         android:layout_centerInParent="true"
-        android:layout_marginTop="20px">
+        android:layout_marginLeft="56px"
+        android:layout_marginTop="20px"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_bg"
@@ -114,4 +109,33 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="66px" />
     </RelativeLayout>
+
+    <com.example.jojo.learn.customview.MyViewPager
+        android:id="@+id/myviewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></com.example.jojo.learn.customview.MyViewPager>
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="64px"
+        android:layout_marginRight="30px">
+
+        <LinearLayout
+            android:id="@+id/ll_point_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="40dp"
+            android:orientation="horizontal"></LinearLayout>
+
+        <View
+            android:id="@+id/view_dot"
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:background="@drawable/bg_shape_white_point"></View>
+    </FrameLayout>
 </RelativeLayout>

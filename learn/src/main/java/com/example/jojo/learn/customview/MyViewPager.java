@@ -1,0 +1,179 @@
+package com.example.jojo.learn.customview;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Scroller;
+
+import com.example.jojo.learn.R;
+
+/**
+ * Created by JoJo on 2018/8/14.
+ * wechat:18510829974
+ * description:自定义ViewPager   https://blog.csdn.net/qq_30379689/article/details/52332494
+ */
+
+public class MyViewPager extends ViewGroup {
+    private Context mContext;
+    private int[] images = {R.mipmap.bg_subject_detail_default, R.mipmap.bg_subject_default, R.mipmap.bg_guide_one, R.mipmap.bg_guide_two};
+    private GestureDetector mGestureDetector;
+    private Scroller mScroller;
+    private int position;
+
+    private int scrollX;
+
+    public MyViewPager(Context context) {
+        super(context);
+        this.mContext = context;
+        init();
+    }
+
+    public MyViewPager(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.mContext = context;
+        init();
+    }
+
+    public MyViewPager(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.mContext = context;
+        init();
+    }
+
+    private void init() {
+        for (int i = 0; i < images.length; i++) {
+            ImageView iv = new ImageView(getContext());
+            iv.setBackgroundResource(images[i]);
+            this.addView(iv);
+        }
+        mGestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                //相对滑动：X方向滑动多少距离，view就跟着滑动多少距离
+                scrollBy((int) distanceX, 0);
+                return super.onScroll(e1, e2, distanceX, distanceY);
+            }
+        });
+        mScroller = new Scroller(mContext);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //将触摸事件传递手势识别器
+        mGestureDetector.onTouchEvent(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.e("ACTION_MOVE", "scrollX=" + getScrollX());
+                scrollX = getScrollX();
+                //你滑动的距离加上屏幕的一半，除以屏幕宽度，就是当前图片显示的pos.如果你滑动距离超过了屏幕的一半，这个pos就加1
+                position = (getScrollX() + getWidth() / 2) / getWidth();
+                //滑到最后一张的时候，不能出边界
+                if (position >= images.length) {
+                    position = images.length - 1;
+                }
+
+                if ( mOnPageScrollListener != null) {
+                    Log.e("TAG", "offset=" + (float) (getScrollX() * 1.0 / (( 1) * getWidth())));
+                    mOnPageScrollListener.onPageScrolled((float) (getScrollX() * 1.0 / ( getWidth())), position);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+
+                //绝对滑动，直接滑到指定的x值,较迟钝
+//                scrollTo(pos * getWidth(), 0);
+                Log.e("TAG", "水平方向回弹滑动的距离=" + (-(scrollX - position * getWidth())));
+                mScroller.startScroll(scrollX, 0, -(scrollX - position * getWidth()), 0);
+                invalidate();//使用invalidate这个方法会有执行一个回调方法computeScroll，我们来重写这个方法
+
+                if ( mOnPageScrollListener != null) {
+                    mOnPageScrollListener.onPageSelected(position);
+                }
+                break;
+        }
+        return true;
+    }
+
+    /**
+     * 其实Scroller的原理就是用ScrollTo来一段一段的进行，最后看上去跟自然的一样，必须使用postInvalidate，
+     * 这样才会一直回调computeScroll这个方法，直到滑动结束。基本上ViewPager的效果就出来了，看下效果图：
+     */
+    @Override
+    public void computeScroll() {
+        if (mScroller.computeScrollOffset()) {
+            scrollTo(mScroller.getCurrX(), 0);
+            Log.e("CurrX", "mScroller.getCurrX()=" + mScroller.getCurrX());
+            postInvalidate();
+            if (mOnPageScrollListener != null) {
+                Log.e("TAG", "offset=" + (float) (getScrollX() * 1.0 / (getWidth())));
+                mOnPageScrollListener.onPageScrolled((float) (mScroller.getCurrX() * 1.0 / ((1) * getWidth())), position);
+            }
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childView = getChildAt(i);
+            childView.layout(i * getWidth(), t, (i + 1) * getWidth(), b);
+
+        }
+    }
+
+    public interface OnPageScrollListener {
+        /**
+         *
+         * @param offsetPercent  offsetPercent：getScrollX滑动的距离占屏幕宽度的百分比
+         * @param position
+         */
+        void onPageScrolled(float offsetPercent, int position);
+
+        void onPageSelected(int position);
+    }
+
+    private OnPageScrollListener mOnPageScrollListener;
+
+    public void setOnPageScrollListener(OnPageScrollListener onPageScrollListener) {
+        this.mOnPageScrollListener = onPageScrollListener;
+    }
+}
+/**
+ * 一,屏幕的左上角是坐标系统原点（0,0）
+ * <p>
+ * 原点向右延伸是X轴正方向，原点向下延伸是Y轴正方向
+ * 1,MotionEvent类中：
+ * event.getRowX（）：触摸点相对于屏幕原点的X坐标
+ * event.getX（）：   触摸点相对于其所在组件原点的X坐标
+ * event.getRowY（）：触摸点相对于屏幕原点的Y坐标
+ * event.getY（）：   触摸点相对于其所在组件原点的Y坐标
+ * 2,Scroller类中：
+ * getScrollY():相对于“坐标系统原点”(见上图)在Y轴上的偏移量
+ * getScrollX():相对于“坐标系统原点”(见上图)在X轴上的偏移量
+ * 3,View类中:
+ * getScrollY():相对于“坐标系统原点”(见上图)在Y轴上的偏移量
+ * getScrollX():相对于“坐标系统原点”(见上图)在X轴上的偏移量
+ * <p>
+ * <p>
+ * <p>
+ * 二,computeScroll：主要功能是计算拖动的位移量、更新背景、设置要显示的屏幕
+ * 在computeScroll()中获取滚动情况，做出滚动的响应
+ * computeScroll在父控件执行drawChild时调用
+ * <p>
+ * <p>
+ * <p>
+ * 三,startScroll
+ * 提供的起始点和将要滑动的距离开始滚动。滚动会使用缺省值250ms作为持续时间。
+ * 参数
+ * 　startX 水平方向滚动的偏移值，以像素为单位。正值表明滚动将向左滚动
+ * 　startY 垂直方向滚动的偏移值，以像素为单位。正值表明滚动将向上滚动
+ * 　dx 水平方向滑动的距离，正值会使滚动向左滚动 负值向右滑动
+ * 　dy 垂直方向滑动的距离，正值会使滚动向上滚动
+ */
