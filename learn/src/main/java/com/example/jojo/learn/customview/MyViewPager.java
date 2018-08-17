@@ -15,7 +15,7 @@ import com.example.jojo.learn.R;
 /**
  * Created by JoJo on 2018/8/14.
  * wechat:18510829974
- * description:自定义ViewPager   https://blog.csdn.net/qq_30379689/article/details/52332494
+ * description:自定义ViewPager
  */
 
 public class MyViewPager extends ViewGroup {
@@ -26,6 +26,8 @@ public class MyViewPager extends ViewGroup {
     private int position;
 
     private int scrollX;
+    private int startX;
+    private int startY;
 
     public MyViewPager(Context context) {
         super(context);
@@ -51,6 +53,10 @@ public class MyViewPager extends ViewGroup {
             iv.setBackgroundResource(images[i]);
             this.addView(iv);
         }
+        //由于ViewGroup默认只测量下面一层的子View(所以我们直接在ViewGroup里面添加ImageView是可以直接显示出来的)，所以基本自定义ViewGroup都会要重写onMeasure方法，否则无法测量第一层View（这里是ScrollView）中的view，无法正常显示里面的内容。
+        View testView = View.inflate(mContext, R.layout.test_viewpager_scrollview, null);
+        addView(testView, 2);
+
         mGestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -63,6 +69,43 @@ public class MyViewPager extends ViewGroup {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            //如果是view:触发view的测量;如果是ViewGroup，触发测量ViewGroup中的子view
+            getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // 如果左右滑动, 就需要拦截, 上下滑动,不需要拦截
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startX = (int) ev.getX();
+                startY = (int) ev.getY();
+                mGestureDetector.onTouchEvent(ev);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int endX = (int) ev.getX();
+                int endY = (int) ev.getY();
+                int dx = endX - startX;
+                int dy = endY - startY;
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    // 左右滑动
+                    return true;// 中断事件传递, 不允许孩子响应事件了, 由父控件处理
+                }
+                break;
+            default:
+                break;
+        }
+        return false;// 不拦截事件,优先传递给孩子(也就是ScrollView，让它正常处理上下滑动事件)处理
+
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         //将触摸事件传递手势识别器
         mGestureDetector.onTouchEvent(event);
@@ -72,28 +115,32 @@ public class MyViewPager extends ViewGroup {
                 break;
             case MotionEvent.ACTION_MOVE:
                 Log.e("ACTION_MOVE", "scrollX=" + getScrollX());
-                scrollX = getScrollX();
+                scrollX = getScrollX();//相对于初始位置滑动的距离
                 //你滑动的距离加上屏幕的一半，除以屏幕宽度，就是当前图片显示的pos.如果你滑动距离超过了屏幕的一半，这个pos就加1
                 position = (getScrollX() + getWidth() / 2) / getWidth();
-                //滑到最后一张的时候，不能出边界
+                //屏蔽边界值：postion在0~images.length-1范围内
                 if (position >= images.length) {
-                    position = images.length - 1;
+                    position = images.length - 1 + 1;
+                }
+                if (position < 0) {
+                    position = 0;
                 }
 
-                if ( mOnPageScrollListener != null) {
-                    Log.e("TAG", "offset=" + (float) (getScrollX() * 1.0 / (( 1) * getWidth())));
-                    mOnPageScrollListener.onPageScrolled((float) (getScrollX() * 1.0 / ( getWidth())), position);
+                if (mOnPageScrollListener != null) {
+                    Log.e("TAG", "offset=" + (float) (getScrollX() * 1.0 / ((1) * getWidth())));
+                    mOnPageScrollListener.onPageScrolled((float) (getScrollX() * 1.0 / (getWidth())), position);
                 }
                 break;
             case MotionEvent.ACTION_UP:
 
-                //绝对滑动，直接滑到指定的x值,较迟钝
-//                scrollTo(pos * getWidth(), 0);
-                Log.e("TAG", "水平方向回弹滑动的距离=" + (-(scrollX - position * getWidth())));
+                //绝对滑动，直接滑到指定的x,y的位置,较迟钝
+//                scrollTo(position * getWidth(), 0);
+//                Log.e("TAG", "水平方向回弹滑动的距离=" + (-(scrollX - position * getWidth())));
+                //滚动，startX, startY为开始滚动的位置，dx,dy为滚动的偏移量
                 mScroller.startScroll(scrollX, 0, -(scrollX - position * getWidth()), 0);
                 invalidate();//使用invalidate这个方法会有执行一个回调方法computeScroll，我们来重写这个方法
 
-                if ( mOnPageScrollListener != null) {
+                if (mOnPageScrollListener != null) {
                     mOnPageScrollListener.onPageSelected(position);
                 }
                 break;
@@ -103,7 +150,7 @@ public class MyViewPager extends ViewGroup {
 
     /**
      * 其实Scroller的原理就是用ScrollTo来一段一段的进行，最后看上去跟自然的一样，必须使用postInvalidate，
-     * 这样才会一直回调computeScroll这个方法，直到滑动结束。基本上ViewPager的效果就出来了，看下效果图：
+     * 这样才会一直回调computeScroll这个方法，直到滑动结束。
      */
     @Override
     public void computeScroll() {
@@ -130,8 +177,7 @@ public class MyViewPager extends ViewGroup {
 
     public interface OnPageScrollListener {
         /**
-         *
-         * @param offsetPercent  offsetPercent：getScrollX滑动的距离占屏幕宽度的百分比
+         * @param offsetPercent offsetPercent：getScrollX滑动的距离占屏幕宽度的百分比
          * @param position
          */
         void onPageScrolled(float offsetPercent, int position);

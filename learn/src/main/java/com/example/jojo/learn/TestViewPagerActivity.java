@@ -29,7 +29,7 @@ import java.util.List;
  * description:
  */
 
-public class TestActivity extends AppCompatActivity {
+public class TestViewPagerActivity extends AppCompatActivity {
     ImageView ball;
     private float[] mCurrentPosition = new float[2];
     private PathMeasure pathMeasure;
@@ -65,7 +65,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onPageScrolled(float offsetPercent, int position) {
                 //效果二：滑动页面过程中小圆点跟随移动
-                // 往左滑动，切换ViewPager的时，positionOffset  0.0->0.99->1     position 0->1
+                //offsetPercent:0-0.5-1-1.5-...
                 float leftMargin = offsetPercent * dotDistance;
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) viewDot.getLayoutParams();
                 params.leftMargin = (int) leftMargin; //滑动后更新距离
@@ -76,6 +76,11 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 Log.e("TAG", "position=" + position);
+//                float leftMargin = position * dotDistance;
+//                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) viewDot.getLayoutParams();
+//                params.leftMargin = (int) leftMargin; //滑动后更新距离
+////                Elog.e("Offset", "params.leftMargin=" + params.leftMargin);
+//                viewDot.setLayoutParams(params);
 
             }
         });

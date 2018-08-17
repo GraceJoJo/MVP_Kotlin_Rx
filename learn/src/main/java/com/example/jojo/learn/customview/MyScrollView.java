@@ -32,7 +32,12 @@ public class MyScrollView extends ScrollView {
         }
     }
 
-   private OnScrollViewListener mListener;
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    private OnScrollViewListener mListener;
 
     public interface OnScrollViewListener {
         void onScrollChanged(int scrollX, int scrollY, int oldx, int oldY);
