@@ -51,8 +51,11 @@ public class TestViewPagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        ball = findViewById(R.id.ball);
-        triangleview = findViewById(R.id.triangleview);
+//        ball = findViewById(R.id.ball);
+//        triangleview = findViewById(R.id.triangleview);
+//        layoutParams = new RelativeLayout.LayoutParams(ballRadius * 2, ballRadius * 2);
+//        ball.setLayoutParams(layoutParams);
+//        startRotate();
 
 
         myviewpager = findViewById(R.id.myviewpager);
@@ -85,9 +88,6 @@ public class TestViewPagerActivity extends AppCompatActivity {
             }
         });
 
-        layoutParams = new RelativeLayout.LayoutParams(ballRadius * 2, ballRadius * 2);
-        ball.setLayoutParams(layoutParams);
-        startRotate();
     }
 
     private void initCirclePoint() {
