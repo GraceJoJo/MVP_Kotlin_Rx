@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/style_translucent_activity">
-        <activity android:name=".TestViewPagerActivity">
+        <activity android:name=".TestCustomViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -5,9 +5,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
         android:background="@color/colorAccent"
-        android:gravity="center_vertical|left"
         android:orientation="vertical"
         android:paddingLeft="50dp">
 
@@ -16,7 +14,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
-            android:paddingTop="20dp"
             android:text="城市：北京"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
