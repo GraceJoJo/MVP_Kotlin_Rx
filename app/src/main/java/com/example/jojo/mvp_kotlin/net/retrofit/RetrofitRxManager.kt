@@ -96,13 +96,15 @@ object RetrofitRxManager {
         }
     }
 
+    var userAgent = "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.87 Safari/537.36"
+
     fun getHeaderInterceptor(): Interceptor {
         return Interceptor { chain ->
             val request = chain!!.request()
             val requestBuilder = request.newBuilder()
                     .addHeader("Connection", HEADER_CONNECTION)
-                    .addHeader("api_key", "mingjiazongxueguan")
-//                    .addHeader("authorization", UserConstants.AUTHORIZATION)// TOKEN
+//                    .addHeader("api_key", "mingjiazongxueguan")
+                    .addHeader("User-Agent", userAgent)
                     .method(request.method(), request.body())
                     .build()
             chain!!.proceed(requestBuilder)
@@ -137,7 +139,7 @@ object RetrofitRxManager {
                         .removeHeader("Pragma").build() // 清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效
             } else {
                 Log.e("Tag", "无网")
-                    //无网络时，设置超时为CACHE_STALE_LONG  只对get有用, post没有缓冲
+                //无网络时，设置超时为CACHE_STALE_LONG  只对get有用, post没有缓冲
                 return response.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + CACHE_STALE_LONG)
                         .removeHeader("Pragma").build()
             }

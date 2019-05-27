@@ -56,9 +56,9 @@ public class LineChartView extends View {
     //Y轴的绘制距离
     private int mYAxisMaxValue;
     //Y轴刻度间距(px)
-    private int yAxisSpace = 120;
+    private int yAxisSpace = 100;
     //X轴刻度间距(px)
-    private int xAxisSpace = 200;
+    private int xAxisSpace = 120;
     //Y轴刻度线宽度
     private int mKeduWidth = 20;
     private float keduTextSize = 20;
@@ -92,19 +92,39 @@ public class LineChartView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthResult = 0;
+        int heightResult = 0;
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         if (heightMode == MeasureSpec.AT_MOST) {
-            heightSize = (mYAxisList.size() - 1) * yAxisSpace + mMaxTextHeight * 2 + textPadinng * 2;
+            heightResult = (mYAxisList.size() - 1) * yAxisSpace + mMaxTextHeight * 2 + textPadinng * 2;
+        } else if (heightMode == MeasureSpec.EXACTLY) {
+            heightResult = Math.max(getContentHeight(), heightSize);
         }
         if (widthMode == MeasureSpec.AT_MOST) {
-
-            widthSize = startX + (mDatas.size() - 1) * xAxisSpace + mMaxTextWidth;
+            widthResult = startX + (mDatas.size() - 1) * xAxisSpace + mMaxTextWidth;
+        } else if (heightMode == MeasureSpec.EXACTLY) {
+            widthResult = Math.max(getContentWidth(), widthSize);
         }
         //保存测量结果
-        setMeasuredDimension(widthSize, heightSize);
+        setMeasuredDimension(widthResult, heightResult);
+    }
+
+    /**
+     * 获取控件内容总的宽度
+     * @return
+     */
+    private int getContentHeight() {
+        return (mYAxisList.size() - 1) * yAxisSpace + mMaxTextHeight * 2 + textPadinng * 2;
+    }
+    /**
+     * 获取控件内容总的宽度
+     * @return
+     */
+    private int getContentWidth() {
+        return startX + (mDatas.size() - 1) * xAxisSpace + mMaxTextWidth;
     }
 
     private void initView() {

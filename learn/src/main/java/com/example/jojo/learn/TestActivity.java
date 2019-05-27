@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.example.jojo.learn.customview.MyViewPager;
+import com.example.jojo.learn.customview.PieChartView;
 import com.example.jojo.learn.customview.ScrollBallView;
 
 import java.util.ArrayList;
@@ -54,7 +55,6 @@ public class TestActivity extends AppCompatActivity {
         ball = findViewById(R.id.ball);
         triangleview = findViewById(R.id.triangleview);
 
-
         myviewpager = findViewById(R.id.myviewpager);
         viewDot = findViewById(R.id.view_dot);
         llPointList = findViewById(R.id.ll_point_list);
@@ -82,7 +82,7 @@ public class TestActivity extends AppCompatActivity {
 
         layoutParams = new RelativeLayout.LayoutParams(ballRadius * 2, ballRadius * 2);
         ball.setLayoutParams(layoutParams);
-        startRotate();
+//        startRotate();
     }
 
     private void initCirclePoint() {
@@ -128,11 +128,10 @@ public class TestActivity extends AppCompatActivity {
         pathMeasure = new PathMeasure(path, true);
 
         //属性动画加载
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, pathMeasure.getLength() - 400);
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, pathMeasure.getLength());
 
         //设置动画时长
         valueAnimator.setDuration(2000);
-        valueAnimator.setRepeatMode(ValueAnimator.REVERSE);
 
         //加入差值器
         valueAnimator.setInterpolator(new LinearInterpolator());
@@ -152,17 +151,17 @@ public class TestActivity extends AppCompatActivity {
                 pathMeasure.getPosTan(value, mCurrentPosition, null);
                 //打印当前坐标
 //                Log.e("xy", mCurrentPosition[0] + "    " + mCurrentPosition[1]);
-                if (mCurrentPosition[0] < 200) {
-                    layoutParams.width = (int) ((400f / (400 - mCurrentPosition[0] - scaleRate)) * ballRadius * 2);
-                    layoutParams.height = (int) ((400f / (400 - mCurrentPosition[0] - scaleRate)) * ballRadius * 2);
-//                    layoutParams.width = (int) (((200 + mCurrentPosition[0]) / 200f) * ballRadius * 2 * scaleRate);
-//                    layoutParams.height = (int) (((200 + mCurrentPosition[0]) / 200f) * ballRadius * 2 * scaleRate);
-                    ball.setLayoutParams(layoutParams);
-                } else {
-                    layoutParams.width = (int) ((400f / (mCurrentPosition[0] - scaleRate)) * ballRadius * 2);
-                    layoutParams.height = (int) ((400f / (mCurrentPosition[0] - scaleRate)) * ballRadius * 2);
-                    ball.setLayoutParams(layoutParams);
-                }
+//                if (mCurrentPosition[0] < 200) {
+//                    layoutParams.width = (int) ((400f / (400 - mCurrentPosition[0] - scaleRate)) * ballRadius * 2);
+//                    layoutParams.height = (int) ((400f / (400 - mCurrentPosition[0] - scaleRate)) * ballRadius * 2);
+////                    layoutParams.width = (int) (((200 + mCurrentPosition[0]) / 200f) * ballRadius * 2 * scaleRate);
+////                    layoutParams.height = (int) (((200 + mCurrentPosition[0]) / 200f) * ballRadius * 2 * scaleRate);
+//                    ball.setLayoutParams(layoutParams);
+//                } else {
+//                    layoutParams.width = (int) ((400f / (mCurrentPosition[0] - scaleRate)) * ballRadius * 2);
+//                    layoutParams.height = (int) ((400f / (mCurrentPosition[0] - scaleRate)) * ballRadius * 2);
+//                    ball.setLayoutParams(layoutParams);
+//                }
 
                 //设置视图坐标
                 ball.setX(mCurrentPosition[0]);

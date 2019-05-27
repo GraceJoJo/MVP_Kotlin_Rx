@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by JoJo on 2018/8/6.
  * wechat:18510829974
- * description:
+ * description: 圆饼图-带文字和比例展示
  */
 
 public class PieChartView extends View {
