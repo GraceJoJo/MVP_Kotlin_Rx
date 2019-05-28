@@ -48,7 +48,7 @@ public class BarChartView extends View {
     private Rect mXMaxTextRect;
     private Rect mYMaxTextRect;
     //是否要展示柱状条对应的值
-    private boolean isShowValueText = false;
+    private boolean isShowValueText = true;
     //数据值
     private List<Integer> mData = new ArrayList<>();
     private List<Integer> yAxisList = new ArrayList<>();
@@ -66,7 +66,7 @@ public class BarChartView extends View {
     public BarChartView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.mContext = context;
-        colors = new int[]{ContextCompat.getColor(context, R.color.color_07f2ab), ContextCompat.getColor(context, R.color.color_79d4d8), ContextCompat.getColor(context, R.color.color_4388bc), ContextCompat.getColor(context, R.color.color_07f2ab), ContextCompat.getColor(context, R.color.color_4388bc)};
+        colors = new int[]{ContextCompat.getColor(context, R.color.color_07f2ab), ContextCompat.getColor(context, R.color.color_79d4d8), ContextCompat.getColor(context, R.color.color_4388bc), ContextCompat.getColor(context, R.color.color_07f2ab), ContextCompat.getColor(context, R.color.color_4388bc), ContextCompat.getColor(context, R.color.color_4388bc), ContextCompat.getColor(context, R.color.color_4388bc)};
         init(context, false);
     }
 

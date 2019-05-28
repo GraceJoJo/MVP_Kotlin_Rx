@@ -1,6 +1,9 @@
 package com.example.jojo.learn.customview;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -13,12 +16,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.example.jojo.learn.R;
 import com.example.jojo.learn.utils.DP2PX;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,25 +66,35 @@ public class LineChartShadowView extends View {
     //Y轴的绘制距离
     private int mYAxisMaxValue;
     //Y轴刻度间距(px)
-    private int yAxisSpace = 50;
+    private int yAxisSpace = 40;
     //X轴刻度间距(px)
     private int xAxisSpace = 120;
     //Y轴刻度线宽度
     private int mKeduWidth = 20;
-    private float keduTextSize = 20;
+    private int keduTextSize = 11;//sp
     //刻度值距离坐标的padding距离
     private int textPadinng = 10;
+    //X轴刻度文本距离X轴的边距
+    private int yAxisTextPadding = 60;
     //Y轴递增的实际值
     private int yIncreaseValue;
     //true：绘制曲线 false：折线
     private boolean isCurve = true;
     private Rect mYMaxTextRect;
     private Rect mXMaxTextRect;
+    //最大的数据值所占的文字矩形区域
+    private Rect mMaxDataValueTextRect;
     private int mMaxTextHeight;
     private int mMaxTextWidth;
-    private boolean isFillDownLineColor = true;
-    private Paint linePaint;
     private Path baseLinePath;
+    private Paint mOutCirclePaint;
+    private Paint mInnerCirclePaint;
+    //内圆小圆点半径
+    private int innerRadius = 10;
+    //外圆小圆点半径
+    private int outRadius = 16;
+    //坐标上的点和点上文字之间的距离
+    private int dotTextPading = 10;
 
     public LineChartShadowView(Context context) {
         this(context, null);
@@ -109,7 +124,7 @@ public class LineChartShadowView extends View {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         if (heightMode == MeasureSpec.AT_MOST) {
-            heightResult = (mYAxisList.size() - 1) * yAxisSpace + mMaxTextHeight * 2 + textPadinng * 2;
+            heightResult = (mYAxisList.size() - 1) * yAxisSpace + mMaxTextHeight * 2 + textPadinng * 2 + yAxisTextPadding + mMaxDataValueTextRect.height();
         } else if (heightMode == MeasureSpec.EXACTLY) {
             heightResult = Math.max(getContentHeight(), heightSize);
         }
@@ -128,7 +143,7 @@ public class LineChartShadowView extends View {
      * @return
      */
     private int getContentHeight() {
-        return (mYAxisList.size() - 1) * yAxisSpace + mMaxTextHeight * 2 + textPadinng * 2;
+        return (mYAxisList.size() - 1) * yAxisSpace + mMaxTextHeight * 2 + textPadinng * 2 + yAxisTextPadding + mMaxDataValueTextRect.height();
     }
 
     /**
@@ -142,30 +157,7 @@ public class LineChartShadowView extends View {
 
     private void initView() {
         //初始化画笔
-        mPaint = new Paint();
-        mPaint.setColor(ContextCompat.getColor(mContext, R.color.color_e05864));
-        mPaint.setStrokeWidth(2);
-        mPaint.setAntiAlias(true);
-        mPaint.setStyle(Paint.Style.STROKE);
-        //绘制X,Y轴坐标的画笔
-        mAxisPaint = new Paint();
-        mAxisPaint.setColor(ContextCompat.getColor(mContext, R.color.color_274782));
-        mAxisPaint.setStrokeWidth(2);
-        mAxisPaint.setAntiAlias(true);
-        mAxisPaint.setStyle(Paint.Style.STROKE);
-        //绘制坐标轴上方的横线的画笔
-        mXAxisLinePaint = new Paint();
-        mXAxisLinePaint.setColor(ContextCompat.getColor(mContext, R.color.color_274782));
-        mXAxisLinePaint.setStrokeWidth(1);
-        mXAxisLinePaint.setAntiAlias(true);
-        mXAxisLinePaint.setStyle(Paint.Style.STROKE);
-
-        //绘制刻度值文字的画笔
-        mPaintText = new Paint();
-        mPaintText.setTextSize(keduTextSize);
-        mPaintText.setColor(ContextCompat.getColor(mContext, R.color.color_a9c6d6));
-        mPaintText.setAntiAlias(true);
-        mPaintText.setStrokeWidth(1);
+        initPaint();
 
         //折线下的阴影的画笔
         baseShadow = new Paint();
@@ -176,8 +168,10 @@ public class LineChartShadowView extends View {
 
         mYMaxTextRect = new Rect();
         mXMaxTextRect = new Rect();
+        mMaxDataValueTextRect = new Rect();//最大的数据值所占的文字矩形区域
         mPaintText.getTextBounds(Integer.toString(mYAxisList.get(mYAxisList.size() - 1)), 0, Integer.toString(mYAxisList.get(mYAxisList.size() - 1)).length(), mYMaxTextRect);
         mPaintText.getTextBounds(mXAxisList.get(mXAxisList.size() - 1), 0, mXAxisList.get(mXAxisList.size() - 1).length(), mXMaxTextRect);
+        mPaintText.getTextBounds(Collections.max(mDatas) + "段", 0, (Collections.max(mDatas) + "段").length(), mMaxDataValueTextRect);
         //绘制的刻度文字的最大值所占的宽高
         mMaxTextWidth = mYMaxTextRect.width() > mXMaxTextRect.width() ? mYMaxTextRect.width() : mXMaxTextRect.width();
         mMaxTextHeight = mYMaxTextRect.height() > mXMaxTextRect.height() ? mYMaxTextRect.height() : mXMaxTextRect.height();
@@ -202,30 +196,61 @@ public class LineChartShadowView extends View {
         Log.e("TAG", "viewHeight=" + viewHeight);
 
         baseLinePath = new Path();
+
+
     }
 
     /**
-     * 根据传入的数据，确定绘制的点
-     *
-     * @return
+     * 初始化画笔
      */
-    private Point[] initPoint() {
-        Point[] points = new Point[mDatas.size()];
-        for (int i = 0; i < mDatas.size(); i++) {
-            Integer ybean = mDatas.get(i);
-            int drawHeight = (int) (startY * 1.0 - (ybean * yAxisSpace * 1.0 / yIncreaseValue));
-            int startx = startX + xAxisSpace * i;
-            points[i] = new Point(startx, drawHeight);
-        }
-        Log.e("TAG", "startX=" + startX + "---startY=" + startY);
-        return points;
+    private void initPaint() {
+        //绘制曲线的画笔
+        mPaint = new Paint();
+        mPaint.setColor(ContextCompat.getColor(mContext, R.color.color_e05864));
+        mPaint.setStrokeWidth(2);
+        mPaint.setAntiAlias(true);
+        mPaint.setStyle(Paint.Style.STROKE);
+
+        //绘制数据外圆的点的画笔
+        mOutCirclePaint = new Paint();
+        mOutCirclePaint.setColor(Color.WHITE);
+        mOutCirclePaint.setStrokeWidth(2);
+        mOutCirclePaint.setAntiAlias(true);
+        mOutCirclePaint.setStyle(Paint.Style.FILL);
+
+        //绘制数据内圆的点的画笔
+        mInnerCirclePaint = new Paint();
+        mInnerCirclePaint.setColor(ContextCompat.getColor(mContext, R.color.color_e05864));
+        mInnerCirclePaint.setStrokeWidth(2);
+        mInnerCirclePaint.setAntiAlias(true);
+        mInnerCirclePaint.setStyle(Paint.Style.FILL);
+
+        //绘制X,Y轴坐标的画笔
+        mAxisPaint = new Paint();
+        mAxisPaint.setColor(ContextCompat.getColor(mContext, R.color.color_274782));
+        mAxisPaint.setStrokeWidth(2);
+        mAxisPaint.setAntiAlias(true);
+        mAxisPaint.setStyle(Paint.Style.STROKE);
+        //绘制坐标轴上方的横线的画笔
+        mXAxisLinePaint = new Paint();
+        mXAxisLinePaint.setColor(ContextCompat.getColor(mContext, R.color.color_274782));
+        mXAxisLinePaint.setStrokeWidth(1);
+        mXAxisLinePaint.setAntiAlias(true);
+        mXAxisLinePaint.setStyle(Paint.Style.STROKE);
+
+        //绘制刻度值文字的画笔
+        mPaintText = new Paint();
+        mPaintText.setTextSize(sp2px(keduTextSize));
+        mPaintText.setColor(ContextCompat.getColor(mContext, R.color.color_999999));
+        mPaintText.setAntiAlias(true);
+        mPaintText.setStrokeWidth(1);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        mPoints = initPoint();
+        mPoints = initPoint(canvas);
 
 //        for (int i = 0; i < mYAxisList.size(); i++) {
 //            //Y轴方向递增的高度
@@ -250,7 +275,7 @@ public class LineChartShadowView extends View {
             mPaintText.setTextAlign(Paint.Align.LEFT);
             Rect rect = new Rect();
             mPaintText.getTextBounds(mXAxisList.get(i), 0, mXAxisList.get(i).length(), rect);
-            canvas.drawText(mXAxisList.get(i), startX - rect.width() / 2 + xAxisSpace * i, startY + rect.height() + textPadinng, mPaintText);
+            canvas.drawText(mXAxisList.get(i), startX - rect.width() / 2 + xAxisSpace * i, startY + rect.height() + textPadinng + yAxisTextPadding, mPaintText);
         }
         //连接所有的数据点,画曲线
 
@@ -261,7 +286,30 @@ public class LineChartShadowView extends View {
             //画折线
             drawLine(canvas);
         }
+
+        //绘制坐标上的点及值
+        drawPoint(canvas);
     }
+
+
+    /**
+     * 根据传入的数据，确定绘制的点
+     *
+     * @param canvas
+     * @return
+     */
+    private Point[] initPoint(Canvas canvas) {
+        Point[] points = new Point[mDatas.size()];
+        for (int i = 0; i < mDatas.size(); i++) {
+            Integer ybean = mDatas.get(i);
+            int drawHeight = (int) (startY * 1.0 - (ybean * yAxisSpace * 1.0 / yIncreaseValue));
+            int startx = startX + xAxisSpace * i;
+            points[i] = new Point(startx, drawHeight);
+        }
+        Log.e("TAG", "startX=" + startX + "---startY=" + startY);
+        return points;
+    }
+
 
     /**
      * 绘制曲线-曲线图
@@ -290,7 +338,33 @@ public class LineChartShadowView extends View {
             baseLinePath.cubicTo(p3.x, p3.y, p4.x, p4.y, endp.x, endp.y);
         }
         canvas.drawPath(baseLinePath, mPaint);
+        //绘制曲线下面的阴影
         drawArea(canvas, mPoints, baseLinePath);
+    }
+
+    /**
+     * 绘制坐标上的各个数据点和数据值
+     *
+     * @param canvas
+     */
+    private void drawPoint(Canvas canvas) {
+        // 需禁用硬件加速 使用绘制带阴影的圆的方法处理：https://www.jianshu.com/p/5c558f43ce2e
+//        setLayerType(LAYER_TYPE_SOFTWARE, null);
+//        mOutCirclePaint.setMaskFilter(new BlurMaskFilter(outRadius, BlurMaskFilter.Blur.SOLID));
+        Bitmap dotBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_dot);
+        for (int i = 0; i < mPoints.length; i++) {
+//            canvas.drawCircle(mPoints[i].x, mPoints[i].y, outRadius, mOutCirclePaint);
+//            canvas.drawCircle(mPoints[i].x, mPoints[i].y, innerRadius, mInnerCirclePaint);
+            canvas.drawBitmap(dotBitmap, mPoints[i].x - dotBitmap.getHeight() / 2, mPoints[i].y - dotBitmap.getHeight() / 2, mOutCirclePaint);
+
+
+            Rect rectText = new Rect();
+            mPaintText.getTextBounds(mDatas.get(i) + "段", 0, (mDatas.get(i) + "段").length(), rectText);
+            //绘制点上的值
+            canvas.drawText(mDatas.get(i) + "段", mPoints[i].x - dotBitmap.getHeight() / 2,
+                    mPoints[i].y - dotBitmap.getHeight() / 2 - rectText.height() / 2, mPaintText);
+
+        }
     }
 
     /**
@@ -300,13 +374,15 @@ public class LineChartShadowView extends View {
      */
 
     private void drawArea(Canvas canvas, Point[] points, Path path) {
-//#f9adb4  #fed5d8 #f9fefd
 //        String[] colors = {"#f898a0", "#f9adb4", "#fffefe"};
-        String[] colors = {"#ff0000", "#80ff0000", "#fffefe"};
-        LinearGradient mShader = new LinearGradient(0, 0, 0, getMeasuredHeight(), new int[]{Color.parseColor(colors[0]), Color.parseColor(colors[1]), Color.parseColor(colors[2])}, new float[]{0.3f, 0.65f, 0.9f}, Shader.TileMode.REPEAT);
+        String[] colors = {"#ff0000", "#80ff0000", "#80fffefe"};
+//        float[] floats = {0.2f, 0.60f, 0.85f};//渐变比例
+//        float[] floats = {0.2f, 0.50f, 0.85f};//渐变比例
+        float[] floats = {0.2f, 0.50f, 0.75f};//调整渐变比例
+        LinearGradient mShader = new LinearGradient(0, 0, 0, getMeasuredHeight(), new int[]{Color.parseColor(colors[0]), Color.parseColor(colors[1]), Color.parseColor(colors[2])}, floats, Shader.TileMode.REPEAT);
         baseShadow.setShader(mShader);
-        path.lineTo(points[points.length - 1].x, heightResult - 10);
-        path.lineTo(points[0].x, widthResult - 10);
+        path.lineTo(points[points.length - 1].x, heightResult);
+        path.lineTo(points[0].x, widthResult);
         path.close();
         canvas.drawPath(path, baseShadow);
     }
@@ -361,5 +437,16 @@ public class LineChartShadowView extends View {
         this.mYAxisList = yAxisData;
         initView();
         postInvalidate();
+    }
+
+    /**
+     * 将sp转换成px
+     *
+     * @param sp
+     * @return
+     */
+    private int sp2px(int sp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                getResources().getDisplayMetrics());
     }
 }

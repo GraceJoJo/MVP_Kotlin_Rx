@@ -19,12 +19,14 @@ class MainActivity : AppCompatActivity() {
         var mCurrentStep: Float = 9709f
         sportstepview.startCountStep(mCurrentStep)
 
-        var datas = listOf<Int>(24, 20, 22, 15, 10, 8)
-        var xList = listOf<String>("1月份", "2月份", "3月份", "4月份", "5月份", "6月份")
+        var datas = listOf<Int>(24, 20, 22, 35, 28, 8, 2)
+        var xList = listOf<String>("1月份", "2月份", "3月份", "4月份", "5月份", "6月份","7月份")
+        var xList2 = listOf<String>("06.21", "06.22", "06.23", "06.24", "06.25", "06.26", "06.27")
 
         //根据数据的最大值生成上下对应的Y轴坐标范围
         var ylist = mutableListOf<Int>()
         var maxYAxis: Int? = Collections.max(datas)
+//        linechartshadowview.setMaxYDataValue(maxYAxis)
         if (maxYAxis!! % 2 == 0) {
             maxYAxis = maxYAxis + 2
         } else {
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         barchartview.updateValueData(datas, xList, ylist)
         linechartview.updateData(datas, xList, ylist)
         //测试绘制填充渐变色的曲线图
-        linechartshadowview.updateData(datas, xList, ylist)
+        linechartshadowview.updateData(datas, xList2, ylist)
 
         //  添加的是百分比
         var rateList = listOf<Float>(40f, 10f, 5f, 45f)
@@ -60,7 +62,6 @@ class MainActivity : AppCompatActivity() {
         pieoview.updateDate(rate, colors, false)
 
 
-
         //测试带渐变填充色的曲线图
         var timeList = ArrayList<Int>()
         timeList.add(30)
@@ -78,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         bottomList.add("5.26")
         bottomList.add("5.27")
         bottomList.add("5.28")
-        studybendline.updateTime(timeList, bottomList )
+        studybendline.updateTime(timeList, bottomList)
 
     }
 
